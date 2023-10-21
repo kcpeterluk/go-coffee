@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	customer "github.com/kcpeterluk/go-coffee/customer/service"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	customer := customer.NewCustomer("Peter", "Luk")
+	fmt.Printf("Hello World %v (%v)\n", customer.Person.FirstName, customer.Person.ID)
 }
