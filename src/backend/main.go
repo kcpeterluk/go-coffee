@@ -1,12 +1,27 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
 
-	customer "github.com/kcpeterluk/go-coffee/customer/service"
+	"github.com/joho/godotenv"
+	"github.com/kcpeterluk/go-coffee/customer"
 )
 
 func main() {
-	customer := customer.NewCustomer("Peter", "Luk")
-	fmt.Printf("Hello World %v (%v)\n", customer.Person.FirstName, customer.Person.ID)
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
+	mongoUri := os.Getenv("MONGODB_URI")
+
+	cs, err := customer.NewCustomerService(customer.WithMongoCustomerRepository(mongoUri))
+	if err != nil {
+		panic(err)
+	}
+
+	err = cs.Create("Peter", "Luk", "peter.luk@example.com")
+	if err != nil {
+		panic(err)
+	}
 }
