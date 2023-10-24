@@ -3,6 +3,7 @@ package customer
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/kcpeterluk/go-coffee/customer/aggregate"
 	mongo "github.com/kcpeterluk/go-coffee/customer/persistence"
 )
@@ -37,11 +38,20 @@ func WithMongoCustomerRepository(connectionString string) CustomerConfiguration 
 	}
 }
 
-func (cs *CustomerService) Create(firstName string, lastName string, email string) error {
+func (cs *CustomerService) Create(firstName string, lastName string, email string) (uuid.UUID, error) {
 	c := aggregate.NewCustomer(firstName, lastName, email)
 	if err := cs.customers.Create(c); err != nil {
-		return err
+		return uuid.UUID{}, err
 	}
 
-	return nil
+	return c.ID, nil
+}
+
+func (cs *CustomerService) Get(id uuid.UUID) (aggregate.Customer, error) {
+	c, err := cs.customers.Get(id)
+	if err != nil {
+		return c, err
+	}
+
+	return c, nil
 }

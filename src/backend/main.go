@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -20,8 +21,15 @@ func main() {
 		panic(err)
 	}
 
-	err = cs.Create("Peter", "Luk", "peter.luk@example.com")
+	id, err := cs.Create("Peter", "Luk", "peter.luk@example.com")
 	if err != nil {
 		panic(err)
 	}
+
+	c, err := cs.Get(id)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Hello %v\n", c.Person.FirstName)
 }
